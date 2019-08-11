@@ -1,0 +1,15 @@
+{
+  "name": "keep-alive-tester",
+  "version": "0.0.1",
+  "description": "Determine approximate keepAlive value necessary for a Particle device to function at a particular location",
+  "main": "app.js",
+  "keywords": "particle keepalive cellular",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matthew Stanley",
+  "license": "ISC",
+  "dependencies": {
+    "particle-api-js": "^8.0.0"
+  }
+}
