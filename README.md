@@ -22,7 +22,7 @@ All Particle cellular devices operate on UDP. By nature of UDP, a device must ke
 
 If a device is primarily publishing out (to the cloud), this is generally not as big of a problem as the device is able to re-establish a new connection with the tower and then talk out to a specified IP. 
 
-### WHy is it important?
+### Why is it important?
 
 However, in the reverse, this can be VERY problematic for devices that need information sent down to them from the cloud. Once the connection is closed, the device is unreachable and there is no way to talk down to it. Even worse is if the cloud's IP were to change--the device has no way to know where it needs to send new requests.
 
