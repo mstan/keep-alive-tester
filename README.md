@@ -44,6 +44,21 @@ The device OS application is an extremely simple application that has no looping
 
 Since the .subscribe() event does not check for the status of a connection, only incoming events, it cannot be triggered by an event it is unable to receive. This prevents .publish() from attempting to re-establish a potentially broken connection, since .subscribe() being triggered should guarantee an already healthy connection.
 
+#### Why the 2 hour keep alive value is set
+
+By nature of this application, the unit must go offline and become unresponsive for testing. For remote deployments, this is problematic as it renders the device unrecoverable.
+
+Therefore, a keep alive value must be set, albeit at a high value not to interfere with standard keep alive testing. 
+
+keep alive is only ever triggered if a device has not sent other data. Therefore, through the duration of testing, each successful subscribe will reset the keep alive from being triggered and interfereing with testing.
+
+Most cellular operators set a very low default keep alive value, anywhere from 1.5 to 7 minutes. Particle devices intentionally have a longer keep alive. The longest observed keep alive test was 31 minutes on an Electron LTE.
+
+By nature of how the application runs, the device will be pinged at a set interval, and then wait the duration of that interval to check whether the connection still exists. If the connection is broken, the device will be unrecoverable until it's 2 hour keep alive value is triggered. Once the keep alive is triggered, the device becomes recoverable for the duration of its keep alive timeout. If the timeout window is missed--the owner will have to wait another 2 hours before attempting to recover the device.
+
+The 2 hour keep alive is set inentionally high to not interfere with standard testing. As 31 minutes is the highest known value at the time of this testing, it is reasonably assumed that values much higher will not be observed. Anecdotally, if a SIM card has a keep alive that exceeds 2 hours, this test will not not accurately reflect the keep alive and report an unusually high value.
+
+
 ### How the Node application works
 
 The node application is a simple application that works in two parts. There is the publisher and the listener. These work in parallel to ensure activity going to and coming from the device.
@@ -81,7 +96,6 @@ A device runnning Particle's embedded Boron 2G/3G, E Series, or Electron LTE emb
 
 - By default, this application listens for event names from ANY device owned by this account. Only one unit should be run at a time for testing. If multiple units need to be run at a time, multiple instances of this node app should be run by setting the DEVICE_ID environment variable for their associated device
 - The keep alive set by default will be 2 hours. This is done to ensure the device is recoverable once it (intentionally) fails a keep alive ping. Under a 2 
-- Once a device reaches its timeout and this node application exits--the device is not reachable until its 9 hour keepAlive cycle. Once the keepAlive occurs, the device will only be reachable for its keepAlive window--afterward, one must wait for the next 9 hour keep alive cycle before it reachable again or until it is reset.
-- For each test iteration, a device consumes data for handling a subscribed event and publishing an event. Tests should be used sparingly as this may consume a non-insighifcant amount of data is left unchecked.
+- Once a device reaches its timeout and this node application exits--the device is not reachable until its 2 hour keepAlive cycle. Once the keepAlive occurs, the device will only be reachable for its keepAlive window--afterward, one must wait for the next 2 hour keep alive cycle before it reachable again or until it is reset.
+- For each test iteration, a device consumes data for handling a subscribed event and publishing an event. Tests should be used sparingly as this may consume a non-insignifcant amount of data if left unchecked.
 - The default starting interval is 0 minutes (meaning, the app will increment to 1 minute and then increment 1 minute for each iteration). You can change the STARTING_INTERVAL to a higher base value if you wish to decrease testing time. If the default STARTING_INTERVAL is too high though, the test will fail, not returning any known good intervals.
-- 2FA is not presently supported.
