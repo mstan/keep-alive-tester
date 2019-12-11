@@ -17,7 +17,7 @@ let responses = 0;
 function publishEvent(interval) {
 	let options = {
 		name: "katest",
-		data: interval,
+		data: interval + "",
 		isPrivate: true,
 		auth: TOKEN
 	}
