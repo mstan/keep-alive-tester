@@ -1,3 +1,5 @@
+*This repository has been adopted by Particle! All future development of this repository will continue here at: https://github.com/particle-iot/keep-alive-tester*
+
 # Keep Alive Tester
 
 This app is a two part device app and node app written to help approximate the keep Alive requiried to operate a Particle device in a partiicular location
